@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.authentication.LoginActivity">
 
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
@@ -79,8 +89,8 @@
         app:startIconDrawable="@drawable/baseline_email_24"
         tools:alpha="100">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/emailEditText"
+        <com.cascer.dicodingstoryapp.utils.MyEmailEditText
+            android:id="@+id/ed_login_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -116,13 +126,12 @@
         app:startIconDrawable="@drawable/baseline_lock_24"
         tools:alpha="100">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/passwordEditText"
+        <com.cascer.dicodingstoryapp.utils.MyPasswordEditText
+            android:id="@+id/ed_login_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPassword"
-            tools:ignore="SpeakableTextPresentCheck" />
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button

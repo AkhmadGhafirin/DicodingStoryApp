@@ -8,21 +8,31 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.cascer.dicodingstoryapp.databinding.ActivityOnBoardingBinding
 import com.cascer.dicodingstoryapp.ui.authentication.LoginActivity
 import com.cascer.dicodingstoryapp.ui.authentication.RegisterActivity
+import com.cascer.dicodingstoryapp.ui.story.StoryActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class OnBoardingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOnBoardingBinding
+    private val viewModel: OnBoardingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOnBoardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        splashScreen.setOnExitAnimationListener {
+
+        }
+
         setupView()
+        setupViewModel()
         setupAction()
         playAnimation()
     }
@@ -46,6 +56,20 @@ class OnBoardingActivity : AppCompatActivity() {
 
         binding.signupButton.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
+        }
+    }
+
+    private fun setupViewModel() {
+        with(viewModel) {
+            checkIsLogin()
+            isLogin.observe(this@OnBoardingActivity) {
+                if (it) startActivity(
+                    Intent(
+                        this@OnBoardingActivity,
+                        StoryActivity::class.java
+                    )
+                ).also { finish() }
+            }
         }
     }
 
