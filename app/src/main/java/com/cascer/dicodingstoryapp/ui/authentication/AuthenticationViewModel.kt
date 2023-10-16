@@ -10,6 +10,7 @@ import com.cascer.dicodingstoryapp.data.repository.Repository
 import com.cascer.dicodingstoryapp.utils.AppPreferences
 import com.cascer.dicodingstoryapp.utils.network.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,6 +30,9 @@ class AuthenticationViewModel @Inject constructor(
 
     private val _errorMsg = MutableLiveData<String>()
     val errorMsg: LiveData<String> = _errorMsg
+
+    private val _isLogin = MutableLiveData<Boolean>()
+    val isLogin: LiveData<Boolean> = _isLogin
 
     fun register(param: RegisterRequest) = viewModelScope.launch {
         _isLoading.postValue(true)
@@ -59,5 +63,10 @@ class AuthenticationViewModel @Inject constructor(
                 _errorMsg.postValue(result.exception.message)
             }
         }
+    }
+
+    fun checkIsLogin() = viewModelScope.launch {
+        delay(1000L)
+        _isLogin.postValue(appPreferences.token.isNotEmpty())
     }
 }

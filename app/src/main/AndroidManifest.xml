@@ -27,7 +27,10 @@
             android:name=".ui.story.detail.StoryDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.onboarding.OnBoardingActivity"
+            android:name=".ui.authentication.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.authentication.LoginActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,12 +38,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.authentication.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.authentication.LoginActivity"
-            android:exported="false" />
         <activity
             android:name=".ui.story.list.StoryActivity"
             android:exported="false" />

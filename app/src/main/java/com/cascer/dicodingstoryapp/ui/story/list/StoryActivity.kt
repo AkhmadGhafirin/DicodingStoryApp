@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cascer.dicodingstoryapp.R
 import com.cascer.dicodingstoryapp.data.model.StoryDataModel
 import com.cascer.dicodingstoryapp.databinding.ActivityStoryBinding
-import com.cascer.dicodingstoryapp.ui.onboarding.OnBoardingActivity
+import com.cascer.dicodingstoryapp.ui.authentication.LoginActivity
 import com.cascer.dicodingstoryapp.ui.story.StoryViewModel
 import com.cascer.dicodingstoryapp.ui.story.add.StoryAddActivity
 import com.cascer.dicodingstoryapp.ui.story.detail.StoryDetailActivity
@@ -55,7 +55,7 @@ class StoryActivity : AppCompatActivity() {
                 if (it.itemId == R.id.logout) {
                     viewModel.logout()
                     finishAffinity()
-                    startActivity(Intent(this@StoryActivity, OnBoardingActivity::class.java))
+                    startActivity(Intent(this@StoryActivity, LoginActivity::class.java))
                     true
                 } else {
                     false

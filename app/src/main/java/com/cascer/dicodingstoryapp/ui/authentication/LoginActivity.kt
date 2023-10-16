@@ -1,11 +1,8 @@
 package com.cascer.dicodingstoryapp.ui.authentication
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
@@ -30,7 +27,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupView()
         setupViewModel()
-        playAnimation()
     }
 
     private fun setupView() {
@@ -44,36 +40,57 @@ class LoginActivity : AppCompatActivity() {
         }
         supportActionBar?.hide()
 
-        binding.loginButton.setOnClickListener {
+        binding.btnLogin.setOnClickListener {
             login()
+        }
+
+        binding.btnRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 
     private fun login() {
-        val email = binding.edLoginEmail.text.toString()
-        val password = binding.edLoginPassword.text.toString()
+        val email = binding.etEmail.text.toString()
+        val password = binding.etPassword.text.toString()
         if (email.isEmpty()) {
-            binding.edLoginEmail.error = "Email wajib diisi"
+            binding.etEmail.error = "Email wajib diisi"
         } else if (password.isEmpty()) {
-            binding.edLoginPassword.error = "Password wajib diisi"
+            binding.etPassword.error = "Password wajib diisi"
         } else {
             viewModel.login(LoginRequest(email, password))
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.checkIsLogin()
+    }
+
     private fun setupViewModel() {
         with(viewModel) {
+            isLogin.observe(this@LoginActivity) {
+                if (it) startActivity(
+                    Intent(
+                        this@LoginActivity, StoryActivity::class.java
+                    )
+                ).also { finish() }
+            }
+
             isLoginSuccess.observe(this@LoginActivity) {
-                finishAffinity()
-                startActivity(Intent(this@LoginActivity, StoryActivity::class.java))
+                startActivity(
+                    Intent(
+                        this@LoginActivity,
+                        StoryActivity::class.java
+                    )
+                ).also { finish() }
             }
 
             isLoading.observe(this@LoginActivity) {
                 if (it) {
                     binding.progressbar.visible()
-                    binding.loginButton.isEnabled = false
+                    binding.btnLogin.isEnabled = false
                 } else {
-                    binding.loginButton.isEnabled = true
+                    binding.btnLogin.isEnabled = true
                     binding.progressbar.gone()
                 }
             }
@@ -82,39 +99,5 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this@LoginActivity, it, Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun playAnimation() {
-        ObjectAnimator.ofFloat(binding.imageView, View.TRANSLATION_X, -30f, 30f).apply {
-            duration = 6000
-            repeatCount = ObjectAnimator.INFINITE
-            repeatMode = ObjectAnimator.REVERSE
-        }.start()
-
-        val title = ObjectAnimator.ofFloat(binding.titleTextView, View.ALPHA, 1f).setDuration(100)
-        val message =
-            ObjectAnimator.ofFloat(binding.messageTextView, View.ALPHA, 1f).setDuration(100)
-        val emailTextView =
-            ObjectAnimator.ofFloat(binding.emailTextView, View.ALPHA, 1f).setDuration(100)
-        val emailEditTextLayout =
-            ObjectAnimator.ofFloat(binding.emailEditTextLayout, View.ALPHA, 1f).setDuration(100)
-        val passwordTextView =
-            ObjectAnimator.ofFloat(binding.passwordTextView, View.ALPHA, 1f).setDuration(100)
-        val passwordEditTextLayout =
-            ObjectAnimator.ofFloat(binding.passwordEditTextLayout, View.ALPHA, 1f).setDuration(100)
-        val login = ObjectAnimator.ofFloat(binding.loginButton, View.ALPHA, 1f).setDuration(100)
-
-        AnimatorSet().apply {
-            playSequentially(
-                title,
-                message,
-                emailTextView,
-                emailEditTextLayout,
-                passwordTextView,
-                passwordEditTextLayout,
-                login
-            )
-            startDelay = 100
-        }.start()
     }
 }
