@@ -13,7 +13,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.cascer.dicodingstoryapp.data.model.LoginRequest
 import com.cascer.dicodingstoryapp.databinding.ActivityLoginBinding
-import com.cascer.dicodingstoryapp.ui.story.StoryActivity
+import com.cascer.dicodingstoryapp.ui.story.list.StoryActivity
 import com.cascer.dicodingstoryapp.utils.gone
 import com.cascer.dicodingstoryapp.utils.visible
 import dagger.hilt.android.AndroidEntryPoint

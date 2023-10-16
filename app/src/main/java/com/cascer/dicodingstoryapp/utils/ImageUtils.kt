@@ -2,9 +2,13 @@ package com.cascer.dicodingstoryapp.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.cascer.dicodingstoryapp.R
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import java.util.Random
 
 object ImageUtils {

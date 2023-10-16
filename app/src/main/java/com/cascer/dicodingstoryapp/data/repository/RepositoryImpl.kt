@@ -13,6 +13,11 @@ import com.cascer.dicodingstoryapp.data.model.mapper.Mapper.toModel
 import com.cascer.dicodingstoryapp.utils.AppPreferences
 import com.cascer.dicodingstoryapp.utils.ExceptionUtil.toException
 import com.cascer.dicodingstoryapp.utils.network.Result
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
@@ -65,6 +70,28 @@ class RepositoryImpl @Inject constructor(
             val request = apiService.story(
                 token = appPreferences.token,
                 id = id
+            )
+            if (request.isSuccessful) {
+                Result.Success(request.body()?.toModel() ?: emptyStoryDetailModel())
+            } else {
+                Result.Error(request.errorBody().toException())
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    override suspend fun uploadStory(photo: File, desc: String): Result<StoryDetailModel> {
+        return try {
+            val requestBody = desc.toRequestBody("text/plain".toMediaType())
+            val requestImageFile = photo.asRequestBody("image/jpeg".toMediaType())
+            val multipartBody = MultipartBody.Part.createFormData(
+                "photo", photo.name, requestImageFile
+            )
+            val request = apiService.addStory(
+                token = appPreferences.token,
+                file = multipartBody,
+                description = requestBody
             )
             if (request.isSuccessful) {
                 Result.Success(request.body()?.toModel() ?: emptyStoryDetailModel())

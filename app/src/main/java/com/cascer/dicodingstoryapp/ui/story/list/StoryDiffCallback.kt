@@ -1,4 +1,4 @@
-package com.cascer.dicodingstoryapp.ui.story
+package com.cascer.dicodingstoryapp.ui.story.list
 
 import androidx.recyclerview.widget.DiffUtil
 import com.cascer.dicodingstoryapp.data.model.StoryDataModel

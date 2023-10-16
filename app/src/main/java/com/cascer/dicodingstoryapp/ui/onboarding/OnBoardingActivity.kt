@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.cascer.dicodingstoryapp.databinding.ActivityOnBoardingBinding
 import com.cascer.dicodingstoryapp.ui.authentication.LoginActivity
 import com.cascer.dicodingstoryapp.ui.authentication.RegisterActivity
-import com.cascer.dicodingstoryapp.ui.story.StoryActivity
+import com.cascer.dicodingstoryapp.ui.story.list.StoryActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,10 +26,6 @@ class OnBoardingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityOnBoardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        splashScreen.setOnExitAnimationListener {
-
-        }
 
         setupView()
         setupViewModel()

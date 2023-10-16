@@ -6,4 +6,12 @@
     </style>
 
     <style name="Theme.DicodingStoryApp" parent="Base.Theme.DicodingStoryApp" />
+    <style name="Theme.DicodingStoryApp.Toolbar" parent="Widget.MaterialComponents.Toolbar" >
+        <item name="titleTextColor">@color/black</item>
+        <item name="title">@string/toolbar_title</item>
+        <item name="background">@color/white</item>
+        <item name="menu">@menu/menu_story</item>
+    </style>
+
+    <string name="toolbar_title">Dicoding Story</string>
 </resources>
