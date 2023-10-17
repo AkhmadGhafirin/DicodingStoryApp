@@ -14,6 +14,7 @@ import com.cascer.dicodingstoryapp.ui.authentication.LoginActivity
 import com.cascer.dicodingstoryapp.ui.story.StoryViewModel
 import com.cascer.dicodingstoryapp.ui.story.add.StoryAddActivity
 import com.cascer.dicodingstoryapp.ui.story.detail.StoryDetailActivity
+import com.cascer.dicodingstoryapp.ui.story.maps.StoryMapsActivity
 import com.cascer.dicodingstoryapp.utils.gone
 import com.cascer.dicodingstoryapp.utils.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,12 +37,11 @@ class StoryActivity : AppCompatActivity() {
         binding = ActivityStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupView()
-        setupViewModel()
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.requestStories()
+        setupViewModel()
     }
 
     private fun setupView() {
@@ -49,16 +49,27 @@ class StoryActivity : AppCompatActivity() {
             rvList.apply {
                 layoutManager =
                     LinearLayoutManager(this@StoryActivity, LinearLayoutManager.VERTICAL, false)
-                adapter = storyAdapter
+                adapter = storyAdapter.withLoadStateFooter(
+                    footer = LoadingStateAdapter { storyAdapter.retry() }
+                )
             }
             toolbar.setOnMenuItemClickListener {
-                if (it.itemId == R.id.logout) {
-                    viewModel.logout()
-                    finishAffinity()
-                    startActivity(Intent(this@StoryActivity, LoginActivity::class.java))
-                    true
-                } else {
-                    false
+                when (it.itemId) {
+                    R.id.logout -> {
+                        viewModel.logout()
+                        finishAffinity()
+                        startActivity(Intent(this@StoryActivity, LoginActivity::class.java))
+                        true
+                    }
+
+                    R.id.map -> {
+                        startActivity(Intent(this@StoryActivity, StoryMapsActivity::class.java))
+                        true
+                    }
+
+                    else -> {
+                        false
+                    }
                 }
             }
             fabAdd.setOnClickListener {
@@ -77,7 +88,8 @@ class StoryActivity : AppCompatActivity() {
     private fun setupViewModel() {
         with(viewModel) {
             stories.observe(this@StoryActivity) {
-                storyAdapter.sendData(it)
+//                storyAdapter.sendData(it)
+                storyAdapter.submitData(lifecycle, it)
             }
 
             isLoading.observe(this@StoryActivity) {

@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.cascer.dicodingstoryapp.data.model.StoryDataModel
 import com.cascer.dicodingstoryapp.data.repository.Repository
 import com.cascer.dicodingstoryapp.utils.AppPreferences
@@ -19,8 +21,11 @@ class StoryViewModel @Inject constructor(
     private val appPreferences: AppPreferences
 ) : ViewModel() {
 
-    private val _stories = MutableLiveData<List<StoryDataModel>>()
-    val stories: LiveData<List<StoryDataModel>> = _stories
+    val stories: LiveData<PagingData<StoryDataModel>> =
+        repository.stories().cachedIn(viewModelScope)
+
+    private val _storiesWithLocation = MutableLiveData<List<StoryDataModel>>()
+    val storiesWithLocation: LiveData<List<StoryDataModel>> = _storiesWithLocation
 
     private val _story = MutableLiveData<StoryDataModel>()
     val story: LiveData<StoryDataModel> = _story
@@ -37,12 +42,12 @@ class StoryViewModel @Inject constructor(
     private val _isUploadSuccess = MutableLiveData<Boolean>()
     val isUploadSuccess: LiveData<Boolean> = _isUploadSuccess
 
-    fun requestStories() = viewModelScope.launch {
+    fun requestStoriesWithLocation() = viewModelScope.launch {
         _isLoading.postValue(true)
-        when (val request = repository.stories()) {
+        when (val request = repository.storiesWithLocation()) {
             is Result.Success -> {
                 _isLoading.postValue(false)
-                _stories.postValue(request.data.listStory)
+                _storiesWithLocation.postValue(request.data.listStory)
             }
 
             is Result.Error -> {

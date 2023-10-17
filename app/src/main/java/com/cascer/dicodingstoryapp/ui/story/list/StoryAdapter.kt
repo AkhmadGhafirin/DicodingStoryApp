@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.cascer.dicodingstoryapp.data.model.StoryDataModel
@@ -13,20 +14,10 @@ import com.cascer.dicodingstoryapp.utils.ImageUtils.load
 
 class StoryAdapter(
     private val listener: (story: StoryDataModel, optionsCompat: ActivityOptionsCompat) -> Unit
-) : RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
-
-    private var listItem = mutableListOf<StoryDataModel>()
-
-    fun sendData(data: List<StoryDataModel>) {
-        val diffCallback = StoryDiffCallback(listItem, data)
-        val diffStory = DiffUtil.calculateDiff(diffCallback)
-        listItem.clear()
-        listItem.addAll(data)
-        diffStory.dispatchUpdatesTo(this)
-    }
+) : PagingDataAdapter<StoryDataModel, StoryAdapter.StoryViewHolder>(DIFF_ITEM_CALLBACK) {
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
-        listItem[position].let { holder.bind(it) }
+        getItem(position)?.let { holder.bind(it) }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
@@ -36,8 +27,6 @@ class StoryAdapter(
             )
         )
     }
-
-    override fun getItemCount(): Int = listItem.size
 
     inner class StoryViewHolder(private val binding: ItemStoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -50,7 +39,7 @@ class StoryAdapter(
                         Pair(binding.ivPhoto, "profile"),
                         Pair(binding.tvName, "name"),
                     )
-                listener.invoke(listItem[adapterPosition], optionsCompat)
+                getItem(adapterPosition)?.let { item -> listener.invoke(item, optionsCompat) }
             }
         }
 
@@ -58,6 +47,24 @@ class StoryAdapter(
             with(binding) {
                 ivPhoto.load(binding.root.context, item.photoUrl)
                 tvName.text = item.name
+            }
+        }
+    }
+
+    companion object {
+        val DIFF_ITEM_CALLBACK = object : DiffUtil.ItemCallback<StoryDataModel>() {
+            override fun areItemsTheSame(
+                oldItem: StoryDataModel,
+                newItem: StoryDataModel
+            ): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(
+                oldItem: StoryDataModel,
+                newItem: StoryDataModel
+            ): Boolean {
+                return oldItem.id == newItem.id
             }
         }
     }

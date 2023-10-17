@@ -1,8 +1,14 @@
 package com.cascer.dicodingstoryapp.data.repository
 
+import androidx.lifecycle.LiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.cascer.dicodingstoryapp.data.api.ApiService
 import com.cascer.dicodingstoryapp.data.model.LoginRequest
 import com.cascer.dicodingstoryapp.data.model.RegisterRequest
+import com.cascer.dicodingstoryapp.data.model.StoryDataModel
 import com.cascer.dicodingstoryapp.data.model.StoryDetailModel
 import com.cascer.dicodingstoryapp.data.model.StoryListModel
 import com.cascer.dicodingstoryapp.data.model.UserModel
@@ -10,6 +16,7 @@ import com.cascer.dicodingstoryapp.data.model.mapper.Mapper.emptyStoryDetailMode
 import com.cascer.dicodingstoryapp.data.model.mapper.Mapper.emptyStoryListModel
 import com.cascer.dicodingstoryapp.data.model.mapper.Mapper.emptyUserModel
 import com.cascer.dicodingstoryapp.data.model.mapper.Mapper.toModel
+import com.cascer.dicodingstoryapp.data.source.StoryPagingSource
 import com.cascer.dicodingstoryapp.utils.AppPreferences
 import com.cascer.dicodingstoryapp.utils.ExceptionUtil.toException
 import com.cascer.dicodingstoryapp.utils.network.Result
@@ -50,9 +57,20 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun stories(): Result<StoryListModel> {
+    override fun stories(): LiveData<PagingData<StoryDataModel>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10
+            ),
+            pagingSourceFactory = {
+                StoryPagingSource(apiService, token = appPreferences.token)
+            }
+        ).liveData
+    }
+
+    override suspend fun storiesWithLocation(): Result<StoryListModel> {
         return try {
-            val request = apiService.stories(
+            val request = apiService.storiesWithLocation(
                 token = appPreferences.token
             )
             if (request.isSuccessful) {
